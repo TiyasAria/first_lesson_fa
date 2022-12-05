@@ -3,22 +3,72 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_stack/image_stack.dart';
+import 'package:intl/intl.dart';
 
+import '../main.dart';
+import '../model/travel.dart';
+import '../page/detail_page.dart';
 import '../theme/style.dart';
 
-Widget itemVertical(
-    BuildContext context, String imgUrl, String title, double rating) {
-  List<String> images = [
+
+
+
+
+class ItemVertical extends StatefulWidget {
+  Travel travel;
+  ItemVertical(this.travel); 
+
+  @override
+  State<ItemVertical> createState() => _ItemVerticalState();
+}
+
+class _ItemVerticalState extends State<ItemVertical> {
+
+   
+
+  void toggleFavorite(String title) {
+    final existingIndex =
+        favoriteTravel.indexWhere((travel) => travel.title == title);
+    if (existingIndex >= 0) {
+      setState(() {
+        favoriteTravel.removeAt(existingIndex);
+      });
+    } else {
+      setState(() {
+        favoriteTravel
+            .add(dataTravel.firstWhere((travel) => travel.title == title));
+      });
+    }
+  }
+
+  //  func untuk perubaahn warna
+  bool isFav(String title) {
+    return favoriteTravel.any((travel) => travel.title == title); 
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final formaterCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
+     List<String> images = [
    'https://images.unsplash.com/photo-1664575602554-2087b04935a5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
     'https://images.unsplash.com/photo-1664575602554-2087b04935a5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
   ];
-  return Stack(
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    DetailPage(widget.travel, toggleFavorite, isFav)));
+      },
+      child: Stack(
     children: [
       ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Image.network(
-            imgUrl,
+            widget.travel.imageUrl[0],
             width: 137,
             height: 194,
             fit: BoxFit.fill,
@@ -87,7 +137,7 @@ Widget itemVertical(
                       Container(
                           width: 85,
                           child: Text(
-                            title,
+                            widget.travel.title,
                             style:
                                 titleItemMain.copyWith(color: Colors.white),
                             overflow: TextOverflow.ellipsis,
@@ -127,7 +177,7 @@ Widget itemVertical(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('$rating',
+                              Text('${widget.travel.rating}',
                                   style: GoogleFonts.poppins(
                                       fontSize: 8,
                                       fontWeight: FontWeight.w600,
@@ -148,14 +198,11 @@ Widget itemVertical(
             ],
           ))
     ],
-  );
+  )
+    );
+  }
 }
 
-// CircleAvatar itemPerson(String item) {
-//   return CircleAvatar(
-//     child: Image.network(
-//         width: 15,
-//         height: 15,
-//       item),
-//   );
-// }
+
+
+//  func to make currency format

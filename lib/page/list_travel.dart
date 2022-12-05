@@ -39,14 +39,7 @@ class ListTravel extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 16),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: itemVertical(
-                            context,
-                            dataTravel[index].imageUrl[0],
-                            dataTravel[index].title,
-                            dataTravel[index].rating),
-                      ),
+                      child: ItemVertical(dataTravel[index]),
                     );
                   },
                   itemCount: dataTravel.length,
